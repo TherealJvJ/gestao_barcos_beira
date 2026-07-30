@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+{% block titulo %}{{ titulo_pagina }} — INTRANSMAR{% endblock %}
+{% block page_title %}{{ titulo_pagina }}{% endblock %}
+
+{% block conteudo %}
+<div class="mb-4">
+    <h2 style="font-size:20px;margin:0;">Registo de Comunicações</h2>
+    <p class="text-muted">Histórico de mensagens de aviso enviadas aos pescadores do distrito da Beira.</p>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if alertas %}
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Destinatário</th>
+                    <th>Tipo Alerta</th>
+                    <th>Canal</th>
+                    <th>Texto Mensagem</th>
+                    <th>Estado de Envio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in alertas %}
+                <tr>
+                    <td>{{ a.data_criacao|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <strong>{{ a.destinatario.nome_completo }}</strong><br>
+                        <span class="text-muted" style="font-size:12.5px;">{{ a.numero_telefone|default:a.email_destino }}</span>
+                    </td>
+                    <td>{{ a.get_tipo_alerta_display }}</td>
+                    <td><span style="text-transform:uppercase;">{{ a.get_canal_display }}</span></td>
+                    <td><span style="font-size:13px;color:var(--text-muted);">{{ a.mensagem }}</span></td>
+                    <td>{{ a.estado|estado_badge }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Controlo de Paginação -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-custom">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo; Primeiro</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Anterior</a>
+            {% endif %}
+            
+            <span class="current">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Seguinte</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Último &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-journal-text"></i>
+            <h3>Nenhum registo de alerta</h3>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

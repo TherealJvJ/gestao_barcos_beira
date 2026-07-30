@@ -1,0 +1,97 @@
+{% load static %}
+<div class="sidebar" id="sidebar">
+    <!-- Logo -->
+    <a href="{% url 'redirecionar_dashboard' %}" class="sidebar-logo" title="Voltar ao início">
+        <div class="sidebar-logo-icon">
+            <!-- Ícone de embarcação SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+                <path d="M3 18.5L5 14H3V8h4V5h10v3h4v6h-2l2 4.5c-4.5 1.5-9.5 1.5-14 0ZM5 10v2h2v2H5.8l-.7 1.5c3.5.9 7.1.9 10.6 0L15 14h-2v-2h2V10H5Z"/>
+                <path d="M13 5H11V2h2v3Z" opacity=".6"/>
+            </svg>
+        </div>
+        <div class="sidebar-logo-text">
+            <h2>INTRANSMAR</h2>
+            <span>Gestão de Barcos — Beira</span>
+        </div>
+    </a>
+
+    <!-- Navegação -->
+    <nav class="sidebar-nav">
+        {% if tipo_utilizador == 'pescador' %}
+            <div class="nav-section-label">Pescador</div>
+            <a href="{% url 'dashboard_pescador' %}" {% if request.resolver_match.url_name == 'dashboard_pescador' %}class="active"{% endif %}>
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="{% url 'lista_embarcacoes' %}" {% if request.resolver_match.url_name == 'lista_embarcacoes' %}class="active"{% endif %}>
+                <i class="bi bi-water"></i> Minhas Embarcações
+            </a>
+            <a href="{% url 'criar_embarcacao' %}" {% if request.resolver_match.url_name == 'criar_embarcacao' %}class="active"{% endif %}>
+                <i class="bi bi-plus-circle"></i> Solicitar Registo
+            </a>
+            <a href="{% url 'lista_alertas' %}" {% if request.resolver_match.url_name == 'lista_alertas' %}class="active"{% endif %}>
+                <i class="bi bi-bell"></i> Alertas
+                {% if alertas_nao_lidos > 0 %}
+                    <span style="margin-left:auto;background:var(--warning);color:white;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;">{{ alertas_nao_lidos }}</span>
+                {% endif %}
+            </a>
+            <a href="{% url 'perfil' %}" {% if request.resolver_match.url_name == 'perfil' %}class="active"{% endif %}>
+                <i class="bi bi-person-gear"></i> Meu Perfil
+            </a>
+
+        {% elif tipo_utilizador == 'intransmar' %}
+            <div class="nav-section-label">Operações</div>
+            <a href="{% url 'dashboard_intransmar' %}" {% if request.resolver_match.url_name == 'dashboard_intransmar' %}class="active"{% endif %}>
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="{% url 'lista_embarcacoes_intransmar' %}" {% if request.resolver_match.url_name == 'lista_embarcacoes_intransmar' %}class="active"{% endif %}>
+                <i class="bi bi-water"></i> Embarcações
+            </a>
+            <a href="{% url 'registos_pendentes' %}" {% if request.resolver_match.url_name == 'registos_pendentes' %}class="active"{% endif %}>
+                <i class="bi bi-hourglass-split"></i> Registos Pendentes
+                {% if pendentes_count > 0 %}
+                    <span style="margin-left:auto;background:var(--warning);color:white;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;">{{ pendentes_count }}</span>
+                {% endif %}
+            </a>
+            <a href="{% url 'registar_vistoria' %}" {% if request.resolver_match.url_name == 'registar_vistoria' %}class="active"{% endif %}>
+                <i class="bi bi-clipboard-check"></i> Registar Vistoria
+            </a>
+            <a href="{% url 'registar_manutencao' %}" {% if request.resolver_match.url_name == 'registar_manutencao' %}class="active"{% endif %}>
+                <i class="bi bi-tools"></i> Manutenção
+            </a>
+            <a href="{% url 'busca_avancada' %}" {% if request.resolver_match.url_name == 'busca_avancada' %}class="active"{% endif %}>
+                <i class="bi bi-search"></i> Busca Avançada
+            </a>
+            <a href="{% url 'relatorio' %}" {% if request.resolver_match.url_name == 'relatorio' %}class="active"{% endif %}>
+                <i class="bi bi-file-earmark-bar-graph"></i> Relatórios
+            </a>
+            <a href="{% url 'perfil' %}" {% if request.resolver_match.url_name == 'perfil' %}class="active"{% endif %}>
+                <i class="bi bi-person-gear"></i> Meu Perfil
+            </a>
+
+        {% elif tipo_utilizador == 'admin' %}
+            <div class="nav-section-label">Administração</div>
+            <a href="{% url 'dashboard_admin' %}" {% if request.resolver_match.url_name == 'dashboard_admin' %}class="active"{% endif %}>
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="{% url 'lista_utilizadores' %}" {% if request.resolver_match.url_name == 'lista_utilizadores' %}class="active"{% endif %}>
+                <i class="bi bi-people"></i> Utilizadores
+            </a>
+            <a href="{% url 'lista_embarcacoes_intransmar' %}" {% if request.resolver_match.url_name == 'lista_embarcacoes_intransmar' %}class="active"{% endif %}>
+                <i class="bi bi-water"></i> Embarcações
+            </a>
+            <a href="{% url 'alertas_config' %}" {% if request.resolver_match.url_name == 'alertas_config' %}class="active"{% endif %}>
+                <i class="bi bi-sliders"></i> Configurar Alertas
+            </a>
+            <a href="{% url 'alertas_log' %}" {% if request.resolver_match.url_name == 'alertas_log' %}class="active"{% endif %}>
+                <i class="bi bi-journal-text"></i> Log Notificações
+            </a>
+        {% endif %}
+    </nav>
+
+    <!-- Logout -->
+    <div class="sidebar-logout">
+        <a href="{% url 'logout' %}" onclick="return confirmarLogout(this.href)">
+            <i class="bi bi-box-arrow-right"></i> Terminar Sessão
+        </a>
+    </div>
+</div>

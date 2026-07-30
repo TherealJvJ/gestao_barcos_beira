@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+
+{% block titulo %}Painel INTRANSMAR{% endblock %}
+{% block page_title %}Painel de Operações{% endblock %}
+
+{% block conteudo %}
+<!-- Banner de Operações Regional -->
+<div class="dashboard-hero-banner" style="background: linear-gradient(135deg, var(--primary-dark) 0%, #17546B 100%); color: white; padding: 32px 40px; border-radius: 16px; margin-bottom: 30px; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(6,59,79,0.15);">
+    <div style="position: relative; z-index: 2; max-width: 600px;">
+        <span style="text-transform: uppercase; font-size: 11px; letter-spacing: 2px; font-weight: 700; color: var(--primary-light); background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 20px;">INTRANSMAR BEIRA</span>
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 700; margin-top: 12px; margin-bottom: 6px;">Centro de Controlo de Operações</h2>
+        <p style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; margin: 0;">Administração, licenciamento, vistorias e monitoramento de conformidade da frota artesanal da Beira.</p>
+    </div>
+    <!-- Detalhe Náutico de fundo -->
+    <div style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: 0.08; pointer-events: none;">
+        <i class="bi bi-compass" style="font-size: 160px; color: white;"></i>
+    </div>
+</div>
+
+<!-- Grelha de Estatísticas Assimétrica -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div style="background: white; border-radius: 12px; padding: 22px; border: 1px solid var(--border-color); border-left: 4px solid var(--primary); box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: var(--primary-dark); line-height: 1.1;">{{ total_embarcacoes }}</div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">Total Frota</div>
+            </div>
+            <i class="bi bi-water" style="font-size: 28px; color: rgba(10,107,138,0.25);"></i>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div style="background: white; border-radius: 12px; padding: 22px; border: 1px solid var(--border-color); border-left: 4px solid var(--warning); box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: var(--primary-dark); line-height: 1.1;">{{ pendentes }}</div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">Pendentes</div>
+            </div>
+            <i class="bi bi-hourglass-split" style="font-size: 28px; color: rgba(217,123,64,0.25);"></i>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div style="background: white; border-radius: 12px; padding: 22px; border: 1px solid var(--border-color); border-left: 4px solid var(--success); box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: var(--primary-dark); line-height: 1.1;">{{ licencas_activas }}</div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">Licenças Activas</div>
+            </div>
+            <i class="bi bi-file-earmark-check" style="font-size: 28px; color: rgba(31,158,110,0.25);"></i>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div style="background: white; border-radius: 12px; padding: 22px; border: 1px solid var(--border-color); border-left: 4px solid var(--danger); box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: var(--primary-dark); line-height: 1.1;">{{ licencas_expirando }}</div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">A Expirar</div>
+            </div>
+            <i class="bi bi-exclamation-octagon" style="font-size: 28px; color: rgba(204,62,62,0.25);"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Atalhos Rápidos Flutuantes -->
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;">
+    <a href="{% url 'registos_pendentes' %}" class="btn-coral" style="padding: 11px 20px;">
+        <i class="bi bi-hourglass-split"></i> Validar Registos
+        {% if pendentes > 0 %}
+            <span style="background: white; color: var(--warning); padding: 2px 7px; border-radius: 10px; font-size: 11px; font-weight: 700; margin-left: 6px;">{{ pendentes }}</span>
+        {% endif %}
+    </a>
+    <a href="{% url 'registar_vistoria' %}" class="btn-oceano" style="padding: 11px 20px;">
+        <i class="bi bi-clipboard-check"></i> Registar Vistoria
+    </a>
+    <a href="{% url 'registar_manutencao' %}" class="btn-outline-oceano" style="padding: 10px 20px;">
+        <i class="bi bi-tools"></i> Registar Manutenção
+    </a>
+    <a href="{% url 'relatorio' %}" class="btn-outline-oceano" style="padding: 10px 20px;">
+        <i class="bi bi-file-earmark-bar-graph"></i> Gerar Relatório
+    </a>
+</div>
+
+<!-- Gráficos e Tabelas Lado a Lado -->
+<div class="row g-4 mb-4">
+    <!-- Coluna de Gráficos (Esquerda - 6 colunas) -->
+    <div class="col-lg-6">
+        <div class="card mb-4" style="border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: white; box-shadow: var(--shadow-sm);">
+            <div style="padding: 18px 24px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 13.5px; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); background: var(--surface-2);">
+                <i class="bi bi-pie-chart" style="color: var(--primary); margin-right: 6px;"></i> Tipos de Embarcações
+            </div>
+            <div class="card-body" style="padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 280px;">
+                <canvas id="grafico-tipo" style="max-height:220px; max-width: 100%;"></canvas>
+            </div>
+        </div>
+        
+        <div class="card" style="border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: white; box-shadow: var(--shadow-sm);">
+            <div style="padding: 18px 24px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 13.5px; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); background: var(--surface-2);">
+                <i class="bi bi-bar-chart" style="color: var(--primary); margin-right: 6px;"></i> Estado das Licenças
+            </div>
+            <div class="card-body" style="padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 280px;">
+                <canvas id="grafico-licencas" style="max-height:220px; max-width: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coluna de Tabela (Direita - 6 colunas) -->
+    <div class="col-lg-6">
+        <div class="card h-100" style="border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: white; box-shadow: var(--shadow-sm); display: flex; flex-direction: column;">
+            <div style="padding: 18px 24px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 13.5px; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); background: var(--surface-2); display: flex; justify-content: space-between; align-items: center;">
+                <div class="header-left">
+                    <i class="bi bi-hourglass-split" style="color: var(--warning); margin-right: 6px;"></i> Registos Pendentes Recentes
+                </div>
+                {% if registos_pendentes %}
+                <a href="{% url 'registos_pendentes' %}" class="btn-outline-oceano btn-xs">Ver Todos</a>
+                {% endif %}
+            </div>
+            <div style="flex-grow: 1;">
+                {% if registos_pendentes %}
+                <div class="table-responsive-custom">
+                    <table class="table-custom" style="background: white;">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Matrícula</th>
+                                <th>Acções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emb in registos_pendentes %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600; color: var(--primary-dark);">{{ emb.nome }}</div>
+                                    <span style="font-size: 11px; color: var(--text-muted);">{{ emb.id_utilizador.nome_completo }}</span>
+                                </td>
+                                <td><code style="background: var(--surface-2); padding: 2px 6px; border-radius: 4px; font-size: 12px;">{{ emb.numero_matricula }}</code></td>
+                                <td>
+                                    <div style="display: flex; gap: 4px;">
+                                        <button onclick="confirmarAprovacao('{% url 'aprovar_embarcacao' emb.pk %}')" class="btn-mar btn-xs" style="padding: 4px 8px;"><i class="bi bi-check"></i></button>
+                                        <button onclick="confirmarRejeicao('{% url 'rejeitar_embarcacao' emb.pk %}')" class="btn-perigo btn-xs" style="padding: 4px 8px;"><i class="bi bi-x"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 300px; padding: 40px; text-align: center; color: var(--text-muted);">
+                    <i class="bi bi-check-circle-fill" style="font-size: 40px; color: var(--success); opacity: 0.8; margin-bottom: 12px;"></i>
+                    <h4 style="font-size: 15px; font-weight: 600; color: var(--primary-dark);">Sem pendências no momento</h4>
+                    <p style="font-size: 12.5px; max-width: 250px; margin: 4px auto 0;">Todas as solicitações de registo de barcos já foram validadas.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var dadosTipo = {{ por_tipo|safe }};
+    if (dadosTipo && dadosTipo.length > 0) {
+        var labelsTipo = dadosTipo.map(function(d) {
+            return d.tipo_embarcacao.replace(/_/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+        });
+        var valoresTipo = dadosTipo.map(function(d) { return d.total; });
+        criarGraficoDoughnut('grafico-tipo', labelsTipo, valoresTipo, ['#0A6B8A', '#1F9E6E', '#D97B40', '#CC3E3E']);
+    }
+
+    fetch('{% url "dados_graficos" %}')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            criarGraficoBarras(
+                'grafico-licencas',
+                ['Activas', 'A Expirar', 'Expiradas'],
+                [
+                    (data.licencas_status && data.licencas_status.activas) || 0,
+                    (data.licencas_status && data.licencas_status.expirando) || 0,
+                    (data.licencas_status && data.licencas_status.expiradas) || 0
+                ],
+                ['#1F9E6E', '#D97B40', '#CC3E3E']
+            );
+        })
+        .catch(function(err) { console.log('Erro ao carregar dados do gráfico:', err); });
+});
+</script>
+{% endblock %}

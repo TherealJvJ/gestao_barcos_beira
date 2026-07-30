@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ titulo_pagina }}{% endblock %}
+
+{% block conteudo %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header-custom"><div class="header-left"><i class="bi bi-people"></i> {{ titulo_pagina }}</div></div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Nome Completo</label>
+                        {{ form.nome_completo }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">E-mail</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Telefone</label>
+                        {{ form.telefone }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nº Documento (BI/NUIT)</label>
+                        {{ form.numero_documento }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Tipo de Utilizador</label>
+                        <select name="tipo_utilizador" class="form-select">
+                            <option value="pescador" {% if utilizador.tipo_utilizador == 'pescador' %}selected{% endif %}>Pescador</option>
+                            <option value="intransmar" {% if utilizador.tipo_utilizador == 'intransmar' %}selected{% endif %}>INTRANSMAR</option>
+                            <option value="admin" {% if utilizador.tipo_utilizador == 'admin' %}selected{% endif %}>Administrador</option>
+                        </select>
+                    </div>
+
+                    {% if is_new %}
+                    <div class="mb-3">
+                        <label class="form-label">Senha</label>
+                        {{ form.password1 }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Confirmar Senha</label>
+                        {{ form.password2 }}
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-oceano">Guardar</button>
+                        <a href="{% url 'lista_utilizadores' %}" class="btn-outline-oceano">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

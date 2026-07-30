@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ titulo_pagina }}{% endblock %}
+
+{% block conteudo %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header-custom"><div class="header-left"><i class="bi bi-water"></i> {{ titulo_pagina }}</div></div>
+            <div class="card-body">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Nome da Embarcação</label>
+                            {{ form.nome }}
+                            {% if form.nome.errors %}
+                                <div class="text-danger small">{{ form.nome.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Número de Matrícula</label>
+                            {{ form.numero_matricula }}
+                            {% if form.numero_matricula.errors %}
+                                <div class="text-danger small">{{ form.numero_matricula.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tipo de Embarcação</label>
+                            {{ form.tipo_embarcacao }}
+                            {% if form.tipo_embarcacao.errors %}
+                                <div class="text-danger small">{{ form.tipo_embarcacao.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Material do Casco</label>
+                            {{ form.material }}
+                            {% if form.material.errors %}
+                                <div class="text-danger small">{{ form.material.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Comprimento (metros)</label>
+                            {{ form.comprimento }}
+                            <div class="form-text">Máximo 10 metros para pesca artesanal.</div>
+                            {% if form.comprimento.errors %}
+                                <div class="text-danger small">{{ form.comprimento.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Potência do Motor (CV)</label>
+                            {{ form.potencia_motor }}
+                            <div class="form-text">Máximo 100 CV. Coloque 0 se sem motor.</div>
+                            {% if form.potencia_motor.errors %}
+                                <div class="text-danger small">{{ form.potencia_motor.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Ano de Construção</label>
+                            {{ form.ano_construcao }}
+                            {% if form.ano_construcao.errors %}
+                                <div class="text-danger small">{{ form.ano_construcao.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Observações</label>
+                            {{ form.observacoes }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-oceano">Guardar Registo</button>
+                        <a href="{% url 'redirecionar_dashboard' %}" class="btn-outline-oceano">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

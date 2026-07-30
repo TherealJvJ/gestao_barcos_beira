@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block titulo %}Configuração de Alertas{% endblock %}
+
+{% block conteudo %}
+<h2><i class="bi bi-sliders" style="margin-right:8px; color:var(--primary-dark);"></i>Configuração de Alertas de Expiração</h2>
+<p style="color:var(--cinza-rede);margin-bottom:24px;">Configurar os dias de antecedência e os canais para avisos automáticos aos pescadores.</p>
+
+<div class="row g-4">
+    <!-- Novo Alerta -->
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header-custom"><div class="header-left"><i class="bi bi-plus-circle"></i> Nova Configuração</div></div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Dias de Antecedência</label>
+                        {{ form.dias_antecedencia }}
+                        <div class="form-text">Ex: 30 dias antes do fim da licença/vistoria.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Canal de Envio</label>
+                        {{ form.canal }}
+                    </div>
+                    <div class="mb-4 form-check">
+                        {{ form.activo }}
+                        <label class="form-check-label" style="margin-left:8px;">Activo</label>
+                    </div>
+                    <button type="submit" class="btn-oceano">Adicionar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Configurações -->
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header-custom"><div class="header-left"><i class="bi bi-sliders"></i> Configurações Existentes</div></div>
+            <div class="card-body p-0">
+                {% if configs %}
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Dias antes</th>
+                            <th>Canal</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in configs %}
+                        <tr>
+                            <td><strong>{{ c.dias_antecedencia }} dias</strong></td>
+                            <td>{{ c.get_canal_display }}</td>
+                            <td>
+                                {% if c.activo %}
+                                    <span class="badge badge-activa">Activo</span>
+                                {% else %}
+                                    <span class="badge badge-expirada">Inactivo</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-4 text-center text-muted">Nenhuma configuração definida.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

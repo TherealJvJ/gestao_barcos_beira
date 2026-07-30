@@ -1,0 +1,50 @@
+<div class="top-navbar">
+    <div class="navbar-left">
+        <button class="btn-hamburger" id="hamburger-btn" onclick="abrirSidebar()" aria-label="Menu">
+            <i class="bi bi-list"></i>
+        </button>
+        <h1 class="page-title">{% block page_title %}{{ nome_sistema }}{% endblock %}</h1>
+    </div>
+
+    <div class="navbar-right">
+        {% if user.is_authenticated %}
+        <!-- Sino de Alertas -->
+        <a href="{% url 'lista_alertas' %}" class="notification-bell" title="Ver Alertas">
+            <i class="bi bi-bell"></i>
+            {% if alertas_nao_lidos > 0 %}
+            <span class="badge-count">{{ alertas_nao_lidos }}</span>
+            {% endif %}
+        </a>
+
+        <!-- Dropdown do Utilizador -->
+        <div class="user-dropdown" id="user-dropdown">
+            <button class="user-btn" onclick="toggleDropdown()" aria-expanded="false" aria-haspopup="true">
+                <div class="user-avatar">
+                    {{ user.nome_completo|slice:":1"|upper }}
+                </div>
+                <span class="user-name-text">{{ user.nome_completo|truncatechars:20 }}</span>
+                <i class="bi bi-chevron-down" style="font-size:11px;opacity:0.6;"></i>
+            </button>
+
+            <div class="dropdown-menu-custom" id="dropdown-menu">
+                <div class="dropdown-user-header">
+                    <div class="user-name">{{ user.nome_completo }}</div>
+                    <div class="user-role">
+                        {% if tipo_utilizador == 'pescador' %}Pescador
+                        {% elif tipo_utilizador == 'intransmar' %}Operador INTRANSMAR
+                        {% elif tipo_utilizador == 'admin' %}Administrador
+                        {% else %}{{ tipo_utilizador }}{% endif %}
+                    </div>
+                </div>
+                <a href="{% url 'perfil' %}">
+                    <i class="bi bi-person-gear"></i> Editar Perfil
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="{% url 'logout' %}" class="dropdown-logout" onclick="return confirmarLogout(this.href)">
+                    <i class="bi bi-box-arrow-right"></i> Terminar Sessão
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>

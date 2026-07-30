@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block titulo %}Registar Vistoria{% endblock %}
+
+{% block conteudo %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header-custom"><div class="header-left"><i class="bi bi-clipboard-check"></i> Registar Vistoria Técnica</div></div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Embarcação</label>
+                        {{ form.embarcacao }}
+                        {% if form.embarcacao.errors %}
+                            <div class="text-danger small">{{ form.embarcacao.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Data da Vistoria</label>
+                            {{ form.data_vistoria }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Próxima Vistoria (Validade)</label>
+                            {{ form.proxima_vistoria }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Resultado</label>
+                        {{ form.resultado }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Observações</label>
+                        {{ form.observacoes }}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-oceano">Registar</button>
+                        <a href="{% url 'redirecionar_dashboard' %}" class="btn-outline-oceano">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

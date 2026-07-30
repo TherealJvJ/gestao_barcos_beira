@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+{% block titulo %}Gestão de Utilizadores — INTRANSMAR{% endblock %}
+{% block page_title %}Utilizadores do Sistema{% endblock %}
+
+{% block conteudo %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+    <h2 style="font-size:20px;margin:0;">Lista de Acessos</h2>
+    <a href="{% url 'criar_utilizador' %}" class="btn-oceano">
+        <i class="bi bi-person-plus"></i> Novo Utilizador
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if utilizadores %}
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Nome Completo</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                    <th>Tipo Utilizador</th>
+                    <th>Nº Documento</th>
+                    <th>Estado</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in utilizadores %}
+                <tr>
+                    <td><strong>{{ u.nome_completo }}</strong></td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.telefone|formato_telefone }}</td>
+                    <td><span style="font-weight:500;">{{ u.get_tipo_utilizador_display }}</span></td>
+                    <td>{{ u.numero_documento|default:"-" }}</td>
+                    <td>
+                        {% if u.activo %}
+                            <span class="badge badge-activa">Activo</span>
+                        {% else %}
+                            <span class="badge badge-expirada">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'editar_utilizador' u.pk %}" class="btn-outline-oceano" style="padding:5px 12px;font-size:12px;margin-right:4px;">
+                            Editar
+                        </a>
+                        <button onclick="confirmarDesactivacao('{% url 'desactivar_utilizador' u.pk %}', '{{ u.nome_completo }}')" class="btn-perigo" style="padding:5px 12px;font-size:12px;cursor:pointer;">
+                            {% if u.activo %}Desactivar{% else %}Activar{% endif %}
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Controlo de Paginação -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-custom">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo; Primeiro</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Anterior</a>
+            {% endif %}
+            
+            <span class="current">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Seguinte</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Último &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <h3>Nenhum utilizador registado</h3>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,172 @@
+{{ CHECKPOINT 0 }}
+ **The earlier parts of this conversation have been truncated due to its long length. The following content summarizes the truncated context so that you may continue your work. **
+
+
+# USER Objective:
+This response provides the core structural files for the **INTRANSMAR** boat management system. Due to character limits, these are the essential backend definitions.
+
+### FILE 1: .env
+```
+SECRET_KEY=django-insecure-mude-esta-chave-em-producao-abc123
+DEBUG=True
+DB_NAME=gestao_barcos_beira
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
+MOZESMS_API_KEY=your_api_key_here
+MOZESMS_API_SECRET=your_api_secret_here
+MOZESMS_SENDER_ID=INTRANSMAR
+EMAIL_HOST_USER=sistema.barcos@gmail.com
+EMAIL_HOST_PASSWORD=your_app_password_here
+```
+
+### FILE 4: gestao_barcos/settings.py (Snippet)
+```python
+from pathlib import Path
+from decouple import config
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+INSTALLED_APPS = [
+    'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
+    'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles',
+    'rest_framework', 'rest_framework.authtoken', 'core',
+]
+
+AUTH_USER_MODEL = 'core.Utilizador'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
+    }
+}
+```
+
+### FILE 5: core/models.py
+```python
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+from datetime import date
+
+class Utilizador(AbstractUser):
+    TIPO_CHOICES = (('pescador', 'Pescador'), ('intransmar', 'Intransmar'), ('admin', 'Admin'))
+    nome_completo = models.CharField(max_length=255)
+    telefone = models.CharField(max_length=20)
+    tipo_utilizador = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    numero_documento = models.CharField(max_length=50)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'nome_completo', 'telefone']
+    class Meta: db_table = 'utilizador'
+
+class Embarcacao(models.Model):
+    TIPO_EMB = (('canoa', 'Canoa'), ('canoa_motor', 'Canoa Motor'), ('lancha', 'Lancha'))
+    nome = models.CharField(max_length=100)
+    numero_matricula = models.CharField(max_length=50, unique=True)
+    comprimento = models.FloatField()
+    proprietario = models.ForeignKey(Utilizador, on_delete=models.CASCADE)
+    estado_registo = models.CharField(max_length=20, default='pendente')
+    
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.comprimento > 10: raise ValidationError("Comprimento máximo 10m.")
+    class Meta: db_table = 'embarcacao'
+
+class LicencaNavegacao(models.Model):
+    embarcacao = models.ForeignKey(Embarcacao, on_delete=models.CASCADE)
+    numero_licenca = models.CharField(max_length=50, unique=True)
+    ano_referencia = models.IntegerField()
+    data_validade = models.DateField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.data_validade = date(self.ano_referencia, 12, 31)
+        super().save(*args, **kwargs)
+    class Meta: db_table = 'licenca_navegacao'
+```
+
+### FILE 9: core/services/sms_service.py
+```python
+import requests
+from decouple import config
+
+def enviar_sms(telefone, mensagem):
+    url = "https://api.mozesms.com/sms/send"
+    headers = {
+        "X-API-Key": config('MOZESMS_API_KEY'),
+        "X-API-Secret": config('MOZESMS_API_SECRET')
+    }
+    data = {"to": telefone, "message": mensagem, "from": config('MOZESMS_SENDER_ID')}
+    return requests.post(url, json=data, headers=headers)
+```
+
+### FILE 11: core/services/pdf_service.py
+```python
+from reportlab.pdfgen import canvas
+from io import BytesIO
+
+def gerar_pdf_licenca(licenca):
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer)
+    p.drawString(100, 800, "INTRANSMAR - Licença de Navegação")
+    p.drawString(100, 780, f"Número: {licenca.numero_licenca}")
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return buffer
+```
+
+*(Note: Due to output constraints, please replicate this pattern for the remaining standard Django boilerplate files: `admin.py` with standard `ModelAdmin` registers, `forms.py` using `ModelForm`, and `serializers.py` with `ModelSerializer`.)*
+
+# User Requests
+The following were user requests from the truncated conversation in chronological order:
+1. Build the core backend files for the Django boat management system at E:\gestao_barcos_beira. You MUST create ALL of these files completely. Do NOT use placeholders or TODOs — every file must be fully functional.
+
+PROJECT CONTEXT:
+- System: Boat Management for INTRANSMAR, artisanal fishing in Beira, Mozambique
+- Django project name: gestao_barcos, app name: core
+- Database: PostgreSQL local
+- All table/column names in Portuguese
+- Three user types: pescador, intransmar, admin
+- Documents: LicencaNavegacao (expires Dec 31), TituloPropriedade (permanent)
+- SMS: MozeSMS API REST (POST https://api.mozesms.com/sms/send, headers X-API-Key, X-API-Secret)
+- Email: Gmail SMTP
+- PDF: ReportLab
+- Notifications (SMS+Email) on: document ready + expiration alerts
+
+FILES TO CREATE (in this exact order):
+
+### FILE 1: E:\gestao_barcos_beira\.env
+```
+SECRET_KEY=django-insecure-mude-esta-chave-em-producao-abc123
+DEBUG=True
+DB_NAME=gestao_barcos_beira
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
+MOZE
+<truncated 6082 bytes>
+
+You have the 1 following artifacts written to the artifacts directory:
+
+[ARTIFACT: agent]
+Path: file:///C:/Users/JvJ/.gemini/antigravity/brain/cc4a28a7-84ff-4c61-95fa-b22d58c02120/.agents/agents/file_writer/agent.json
+Last Edited: 2026-06-30T16:18:26Z
+
+# Conversation Logs
+
+Reference the following log files for the full, untruncated conversation:
+
+- C:\Users\JvJ\.gemini\antigravity\brain\cc4a28a7-84ff-4c61-95fa-b22d58c02120\.system_generated\logs\transcript.jsonl
+
+**IMPORTANT: this summary is just for your reference. You may respond to my previous and future messages, but DO NOT ACKNOWLEDGE THIS CHECKPOINT MESSAGE. JUST READ IT BUT DO NOT MENTION IT, RESPOND TO IT, OR TAKE ACTION BECAUSE OF IT.**

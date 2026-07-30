@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+{% block titulo %}Detalhes — {{ embarcacao.nome }}{% endblock %}
+{% block page_title %}Ficha da Embarcação{% endblock %}
+
+{% block conteudo %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+    <h2 style="font-size:20px;margin:0;">{{ embarcacao.nome }} ({{ embarcacao.numero_matricula }})</h2>
+    <div>
+        <a href="{% url 'redirecionar_dashboard' %}" class="btn-outline-oceano">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Ficha Técnica -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header-custom">
+                <i class="bi bi-card-text"></i> Caraterísticas Técnicas
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless" style="margin:0;">
+                    <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px 0;"><strong>Nome:</strong></td><td style="padding:10px 0;text-align:right;">{{ embarcacao.nome }}</td></tr>
+                    <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px 0;"><strong>Matrícula:</strong></td><td style="padding:10px 0;text-align:right;">{{ embarcacao.numero_matricula }}</td></tr>
+                    <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px 0;"><strong>Tipo:</strong></td><td style="padding:10px 0;text-align:right;">{{ embarcacao.get_tipo_embarcacao_display }}</td></tr>
+                    <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px 0;"><strong>Material:</strong></td><td style="padding:10px 0;text-align:right;">{{ embarcacao.get_material_display }}</td></tr>
+                    <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px 0;"><strong>Comprimento:</strong></td><td style="padding:10px 0;text-align:right;">{{ embarcacao.comprimento }} m</td></tr>
+                    <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px 0;"><strong>Potência Motor:</strong></td><td style="padding:10px 0;text-align:right;">{{ embarcacao.potencia_motor }} CV</td></tr>
+                    <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px 0;"><strong>Ano de Construção:</strong></td><td style="padding:10px 0;text-align:right;">{{ embarcacao.ano_construcao }}</td></tr>
+                    <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px 0;"><strong>Registo:</strong></td><td style="padding:10px 0;text-align:right;">{{ embarcacao.estado_registo|estado_badge }}</td></tr>
+                    <tr><td style="padding:10px 0;"><strong>Proprietário:</strong></td><td style="padding:10px 0;text-align:right;">{{ embarcacao.id_utilizador.nome_completo }} ({{ embarcacao.id_utilizador.telefone|formato_telefone }})</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documentação -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header-custom">
+                <i class="bi bi-file-earmark-lock"></i> Documentação Legal
+            </div>
+            <div class="card-body d-flex flex-column gap-3">
+                <!-- Título de Propriedade -->
+                <div class="p-3 border rounded bg-light">
+                    <h5 style="font-size:14px;font-weight:600;margin-bottom:8px;">Título de Propriedade (Permanente)</h5>
+                    {% if titulo %}
+                        <div style="margin-bottom:12px;font-size:13px;">
+                            <strong>Nº Registo:</strong> {{ titulo.numero_titulo }}<br>
+                            <span class="text-muted">Data de Emissão: {{ titulo.data_emissao|date:"d/m/Y" }}</span>
+                        </div>
+                        <a href="{% url 'baixar_titulo_pdf' titulo.pk %}" class="btn-oceano btn-sm">
+                            <i class="bi bi-file-pdf"></i> Descarregar Título PDF
+                        </a>
+                    {% else %}
+                        <p class="text-danger small mb-2"><i class="bi bi-exclamation-circle"></i> Título de Propriedade não emitido.</p>
+                        {% if tipo_utilizador == 'intransmar' and embarcacao.estado_registo == 'aprovado' %}
+                            <a href="{% url 'emitir_titulo' embarcacao.pk %}" class="btn-oceano btn-sm">
+                                <i class="bi bi-plus"></i> Emitir Título
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <!-- Licença de Navegação -->
+                <div class="p-3 border rounded bg-light">
+                    <h5 style="font-size:14px;font-weight:600;margin-bottom:8px;">Licença de Navegação (Anual)</h5>
+                    {% if licenca_actual %}
+                        <div style="margin-bottom:12px;font-size:13px;">
+                            <strong>Nº Licença:</strong> {{ licenca_actual.numero_licenca }} &middot; {{ licenca_actual.estado|estado_badge }}<br>
+                            <span class="text-muted">Válido até: {{ licenca_actual.data_validade|date:"d/m/Y" }} ({{ licenca_actual.dias_restantes }} dias restantes)</span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'baixar_licenca_pdf' licenca_actual.pk %}" class="btn-oceano btn-sm">
+                                <i class="bi bi-file-pdf"></i> Descarregar PDF
+                            </a>
+                            {% if tipo_utilizador == 'intransmar' and licenca_actual.estado != 'activa' and embarcacao.estado_registo == 'aprovado' %}
+                                <a href="{% url 'emitir_licenca' embarcacao.pk %}" class="btn-outline-oceano btn-sm">
+                                    <i class="bi bi-arrow-repeat"></i> Renovar
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="text-danger small mb-2"><i class="bi bi-exclamation-circle"></i> Sem licença activa para o ano de referência.</p>
+                        {% if tipo_utilizador == 'intransmar' and embarcacao.estado_registo == 'aprovado' %}
+                            <a href="{% url 'emitir_licenca' embarcacao.pk %}" class="btn-oceano btn-sm">
+                                <i class="bi bi-plus"></i> Emitir Licença
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vistorias -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header-custom">
+                <i class="bi bi-clipboard-check"></i> Histórico de Vistorias Técnicas
+            </div>
+            <div class="card-body p-0">
+                {% if vistorias %}
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Data Vistoria</th>
+                            <th>Resultado</th>
+                            <th>Inspector Responsável</th>
+                            <th>Próxima Inspeção</th>
+                            <th>Observações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in vistorias %}
+                        <tr>
+                            <td>{{ v.data_vistoria|date:"d/m/Y" }}</td>
+                            <td>{{ v.resultado|estado_badge }}</td>
+                            <td>{{ v.inspector.nome_completo }}</td>
+                            <td>{{ v.proxima_vistoria|date:"d/m/Y"|default:"-" }}</td>
+                            <td>{{ v.observacoes|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-4 text-center text-muted">Nenhuma vistoria técnica registada para esta embarcação.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

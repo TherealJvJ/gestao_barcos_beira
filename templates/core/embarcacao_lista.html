@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+{% block titulo %}Embarcações{% endblock %}
+{% block page_title %}{{ titulo_pagina|default:"Embarcações" }}{% endblock %}
+
+{% block conteudo %}
+<div class="page-header">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+        <div>
+            <h2>Registo de Embarcações</h2>
+            <p>Lista de todas as embarcações artesanais registadas no sistema.</p>
+        </div>
+        {% if not is_intransmar %}
+        <a href="{% url 'criar_embarcacao' %}" class="btn-oceano">
+            <i class="bi bi-plus-circle"></i> Solicitar Registo
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Barra de Pesquisa -->
+<div class="card mb-3">
+    <div class="card-body" style="padding:16px 24px;">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div style="position:relative;flex-grow:1;max-width:400px;">
+                <i class="bi bi-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;pointer-events:none;"></i>
+                <input type="text" id="busca-tabela" class="form-control" placeholder="Pesquisar por nome ou matrícula..."
+                    style="padding-left:38px;">
+            </div>
+            <span id="resultado-contagem" style="font-size:13px;color:var(--text-muted);white-space:nowrap;"></span>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Embarcações -->
+<div class="card">
+    <div class="table-responsive-custom">
+        {% if embarcacoes %}
+        <table class="table-custom" id="tabela-dados">
+            <thead>
+                <tr>
+                    <th>Embarcação</th>
+                    <th>Matrícula</th>
+                    <th>Tipo</th>
+                    <th>Proprietário</th>
+                    <th>Estado Registo</th>
+                    <th>Licença</th>
+                    <th style="text-align:center;">Acções</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emb in embarcacoes %}
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:32px;height:32px;background:linear-gradient(135deg,rgba(10,107,138,0.12),rgba(10,107,138,0.04));border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:15px;flex-shrink:0;">
+                                <i class="bi bi-water"></i>
+                            </div>
+                            <div>
+                                <strong style="color:var(--primary-dark);">{{ emb.nome }}</strong>
+                            </div>
+                        </div>
+                    </td>
+                    <td><code style="background:var(--surface-2);padding:2px 7px;border-radius:4px;font-size:12px;border:1px solid var(--border-color);">{{ emb.numero_matricula }}</code></td>
+                    <td style="color:var(--text-secondary);">{{ emb.get_tipo_embarcacao_display }}</td>
+                    <td>{{ emb.proprietario.nome_completo }}</td>
+                    <td>{{ emb.estado_registo|estado_badge }}</td>
+                    <td>
+                        {% if emb.licenca_activa %}
+                            {{ emb.licenca_activa.estado|estado_badge }}
+                        {% else %}
+                            <span class="badge badge-inactiva">Sem Licença</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:center;">
+                        <a href="{% url 'detalhe_embarcacao' emb.pk %}" class="btn-outline-oceano btn-xs">
+                            <i class="bi bi-eye"></i> Ver Ficha
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Controlo de Paginação -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-custom">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo; Primeiro</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Anterior</a>
+            {% endif %}
+            
+            <span class="current">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Seguinte</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Último &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-water"></i>
+            <h3>Nenhuma embarcação registada</h3>
+            <p>Não existem embarcações disponíveis no sistema de momento.</p>
+            {% if not is_intransmar %}
+            <a href="{% url 'criar_embarcacao' %}" class="btn-oceano">
+                <i class="bi bi-plus-circle"></i> Solicitar Registo
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+
+{% block titulo %}Painel do Pescador{% endblock %}
+{% block page_title %}Painel do Pescador{% endblock %}
+
+{% block conteudo %}
+<!-- Banner de Boas-Vindas Premium -->
+<div class="dashboard-hero-banner" style="background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); color: white; padding: 32px 40px; border-radius: 16px; margin-bottom: 30px; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(6,59,79,0.15);">
+    <div style="position: relative; z-index: 2; max-width: 600px;">
+        <span style="text-transform: uppercase; font-size: 11px; letter-spacing: 2px; font-weight: 700; color: var(--primary-light); background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 20px;">Área do Pescador</span>
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 700; margin-top: 12px; margin-bottom: 6px;">Olá, {{ user.nome_completo }}!</h2>
+        <p style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; margin: 0;">Bem-vindo ao seu portal. Acompanhe a legalidade da sua frota e vistorias agendadas de forma rápida e digital.</p>
+    </div>
+    <!-- Ondas decorativas de fundo -->
+    <div style="position: absolute; right: -40px; bottom: -30px; opacity: 0.12; pointer-events: none; transform: rotate(-5deg);">
+        <svg width="280" height="200" viewBox="0 0 280 200" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 120 Q50 80 100 120 T200 120 T280 120 L280 200 L0 200 Z" />
+            <path d="M0 140 Q40 110 90 140 T180 140 T280 140 L280 200 L0 200 Z" opacity="0.5" />
+        </svg>
+    </div>
+</div>
+
+<!-- Layout com 2 Colunas Desiguais (Layout Assimétrico Premium) -->
+<div class="row g-4">
+    <!-- Coluna Principal (Esquerda - 8 colunas em desktop) -->
+    <div class="col-lg-8">
+        <!-- Estatísticas Rápidas em Linha Slim -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-4">
+                <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 46px; height: 46px; background: rgba(31,158,110,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--success); font-size: 22px;">
+                        <i class="bi bi-water"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 22px; font-weight: 700; color: var(--primary-dark); line-height: 1;">{{ total_embarcacoes }}</div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">Barcos Registados</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 46px; height: 46px; background: rgba(10,107,138,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 20px;">
+                        <i class="bi bi-file-earmark-check"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 22px; font-weight: 700; color: var(--primary-dark); line-height: 1;">{{ licencas_activas }}</div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">Licenças Activas</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 46px; height: 46px; background: rgba(217,123,64,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--warning); font-size: 20px;">
+                        <i class="bi bi-bell"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 22px; font-weight: 700; color: var(--primary-dark); line-height: 1;">{{ alertas_pendentes }}</div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">Alertas Lidos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Minhas Embarcações (Grelha de Cards) -->
+        <div class="card mb-4">
+            <div class="card-header-custom" style="background: transparent; border-bottom: 1px solid var(--border-color); padding: 18px 24px;">
+                <div class="header-left">
+                    <i class="bi bi-water" style="color: var(--primary);"></i>
+                    <span style="font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 16px; color: var(--primary-dark);">Minhas Embarcações</span>
+                </div>
+                {% if embarcacoes %}
+                <a href="{% url 'lista_embarcacoes' %}" class="btn-outline-oceano btn-sm">Ver Todas</a>
+                {% endif %}
+            </div>
+            <div class="card-body" style="padding: 24px;">
+                {% if embarcacoes %}
+                <div class="row g-3">
+                    {% for emb in embarcacoes %}
+                    <div class="col-md-6">
+                        <div class="boat-card" style="border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; background: white; transition: all 0.2s ease;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                                <div style="width: 40px; height: 40px; background: rgba(10,107,138,0.06); color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                    <i class="bi bi-water"></i>
+                                </div>
+                                {% if emb.licenca_activa %}
+                                    {{ emb.licenca_activa.estado|estado_badge }}
+                                {% else %}
+                                    <span class="badge badge-inactiva">Sem Licença</span>
+                                {% endif %}
+                            </div>
+                            <h4 style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 600; color: var(--primary-dark); margin: 0 0 4px 0;">{{ emb.nome }}</h4>
+                            <code style="font-family: 'Courier New', monospace; font-size: 12px; background: var(--surface-2); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary); border: 1px solid var(--border-color); display: inline-block; margin-bottom: 12px;">{{ emb.numero_matricula }}</code>
+                            
+                            <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px;">
+                                <i class="bi bi-tag" style="margin-right: 4px;"></i> {{ emb.get_tipo_embarcacao_display }} &middot; {{ emb.comprimento }}m
+                            </div>
+                            
+                            <div style="border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: flex-end;">
+                                <a href="{% url 'detalhe_embarcacao' emb.pk %}" class="btn-outline-oceano btn-xs">
+                                    Ver Ficha <i class="bi bi-arrow-right-short" style="font-size: 15px; margin-left: -2px;"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-water" style="font-size: 40px; color: var(--border-color);"></i>
+                    <h3>Nenhuma embarcação cadastrada</h3>
+                    <p>Submeta uma solicitação para cadastrar o seu barco de pesca artesanal.</p>
+                    <a href="{% url 'criar_embarcacao' %}" class="btn-oceano btn-sm" style="margin-top: 8px;">
+                        <i class="bi bi-plus-circle"></i> Solicitar Registo
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Coluna Lateral (Direita - 4 colunas em desktop) -->
+    <div class="col-lg-4">
+        <!-- Painel de Ações Rápidas Customizadas -->
+        <div class="card mb-4" style="border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: white;">
+            <div style="background: var(--surface-2); padding: 16px 20px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 13.5px; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color);">
+                Ações Rápidas
+            </div>
+            <div class="card-body" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <a href="{% url 'criar_embarcacao' %}" class="btn-oceano" style="justify-content: center; padding: 12px; width: 100%;">
+                    <i class="bi bi-plus-circle"></i> Registar Embarcação
+                </a>
+                <a href="{% url 'perfil' %}" class="btn-outline-oceano" style="justify-content: center; padding: 11px; width: 100%;">
+                    <i class="bi bi-person-gear"></i> Editar Perfil
+                </a>
+            </div>
+        </div>
+
+        <!-- Alertas do Pescador -->
+        <div class="card" style="border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: white;">
+            <div style="background: var(--surface-2); padding: 16px 20px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 13.5px; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                Avisos do Sistema
+                <i class="bi bi-bell-fill" style="color: var(--warning); font-size: 14px;"></i>
+            </div>
+            <div class="card-body" style="padding: 20px;">
+                {% if alertas_recentes %}
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        {% for alerta in alertas_recentes %}
+                        <div style="padding: 12px 14px; border-radius: 8px; font-size: 12.5px; border-left: 3.5px solid {% if alerta.tipo_alerta == 'licenca_expirando' or alerta.tipo_alerta == 'vistoria_expirando' %}var(--warning){% else %}var(--primary){% endif %}; background: var(--surface-2); line-height: 1.45;">
+                            <div style="font-weight: 600; color: var(--primary-dark); margin-bottom: 3px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px;">
+                                {{ alerta.get_tipo_alerta_display }}
+                            </div>
+                            <div style="color: var(--text-main);">{{ alerta.mensagem }}</div>
+                            <span style="font-size: 10px; color: var(--text-muted); display: block; margin-top: 6px;">
+                                <i class="bi bi-clock"></i> {{ alerta.data_criacao|timesince }} atrás
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div style="text-align: center; color: var(--text-muted); padding: 24px 0;">
+                        <i class="bi bi-check-circle" style="font-size: 32px; color: var(--success); opacity: 0.8; display: block; margin-bottom: 10px;"></i>
+                        <span style="font-size: 13px;">Nenhuma notificação nova no momento.</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

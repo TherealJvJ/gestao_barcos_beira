@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+{% block titulo %}Registos Pendentes — INTRANSMAR{% endblock %}
+{% block page_title %}Registos Pendentes{% endblock %}
+
+{% block conteudo %}
+<div class="mb-4">
+    <h2 style="font-size:20px;margin:0;">Aprovações de Embarcações</h2>
+    <p class="text-muted">Análise e autorização de solicitações submetidas eletronicamente pelos proprietários.</p>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if pendentes %}
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Embarcação</th>
+                    <th>Matrícula</th>
+                    <th>Tipo</th>
+                    <th>Proprietário</th>
+                    <th>Dimensões / Motor</th>
+                    <th>Data Submissão</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emb in pendentes %}
+                <tr>
+                    <td><strong>{{ emb.nome }}</strong></td>
+                    <td>{{ emb.numero_matricula }}</td>
+                    <td>{{ emb.get_tipo_embarcacao_display }}</td>
+                    <td>{{ emb.proprietario.nome_completo }}</td>
+                    <td>{{ emb.comprimento }} m / {{ emb.potencia_motor }} CV</td>
+                    <td>{{ emb.data_criacao|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <button onclick="confirmarAprovacao('{% url 'aprovar_embarcacao' emb.pk %}')" class="btn-mar" style="padding:6px 12px;font-size:12px;cursor:pointer;">
+                            Aprovar
+                        </button>
+                        <button onclick="confirmarRejeicao('{% url 'rejeitar_embarcacao' emb.pk %}')" class="btn-perigo" style="padding:6px 12px;font-size:12px;cursor:pointer;">
+                            Rejeitar
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Controlo de Paginação -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-custom">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo; Primeiro</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Anterior</a>
+            {% endif %}
+            
+            <span class="current">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Seguinte</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Último &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-check-circle" style="color:var(--success);opacity:0.8;"></i>
+            <h3>Nenhum registo pendente</h3>
+            <p class="text-muted">Todos os pedidos de novas embarcações já foram processados.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
