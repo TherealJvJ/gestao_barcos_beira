@@ -34,7 +34,7 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('E-mail Enviado', style: TextStyle(color: TemaGeral.corPrincipal)),
+            title: const Text('E-mail Enviado', style: TextStyle(color: TemaMaritimo.azulOceano)),
             content: const Text('Se o e-mail existir no nosso sistema, receberá um link para redefinir a sua palavra-passe em breve.'),
             actions: [
               TextButton(
@@ -42,7 +42,7 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
                   Navigator.pop(context); // Fechar dialog
                   Navigator.pop(context); // Voltar para o login
                 },
-                child: const Text('OK', style: TextStyle(color: TemaGeral.corPrincipal)),
+                child: const Text('OK', style: TextStyle(color: TemaMaritimo.azulOceano)),
               ),
             ],
           ),
@@ -58,10 +58,10 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: TemaGeral.corFundo,
+      backgroundColor: TemaMaritimo.areiaClara,
       appBar: AppBar(
         title: const Text('Recuperar Senha', style: TextStyle(color: Colors.white)),
-        backgroundColor: TemaGeral.corPrincipal,
+        backgroundColor: TemaMaritimo.azulProfundo,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
@@ -73,7 +73,7 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
               const Icon(
                 Icons.lock_reset,
                 size: 80,
-                color: TemaGeral.corPrincipal,
+                color: TemaMaritimo.azulOceano,
               ),
               const SizedBox(height: 24),
               const Text(
@@ -81,7 +81,7 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: TemaGeral.corTextoEscuro,
+                  color: TemaMaritimo.azulProfundo,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -90,7 +90,7 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
                 'Introduza o endereço de e-mail associado à sua conta. Iremos enviar-lhe um link para poder redefinir a sua senha no nosso sistema.',
                 style: TextStyle(
                   fontSize: 16,
-                  color: TemaGeral.corTextoSecundario,
+                  color: TemaMaritimo.cinzaRede,
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -101,13 +101,13 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: 'E-mail',
-                  prefixIcon: const Icon(Icons.email, color: TemaGeral.corAcento),
+                  prefixIcon: const Icon(Icons.email, color: TemaMaritimo.laranjaCoral),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: TemaGeral.corAcento, width: 2),
+                    borderSide: const BorderSide(color: TemaMaritimo.laranjaCoral, width: 2),
                   ),
                 ),
               ),
@@ -115,7 +115,7 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _submeter,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: TemaGeral.corSecundaria,
+                  backgroundColor: TemaMaritimo.azulOceano,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

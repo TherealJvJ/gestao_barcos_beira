@@ -1,102 +1,153 @@
-# Sistema de Gestão de Barcos — INTRANSMAR Beira 🎣
+# Sistema de Gestao de Embarcacoes Artesanais — INTRANSMAR Beira
 
-Este projeto foi totalmente construído e codificado de acordo com os requisitos e regras de negócio da INTRANSMAR (Beira, Moçambique) e da pesca artesanal local.
+Trabalho de Conclusao de Curso (TCC) que apresenta o desenvolvimento de um sistema web e movel para a gestao e licenciamento de embarcacoes artesanais na Delegacao da Beira da INTRANSMAR (Instituto Nacional de Transportes Maritimos, Fluviais e Lacustres), Mocambique.
 
-## 📁 Estrutura do Projeto
-- `core/` — Aplicação Django principal (models em português, views, forms, decorators e comandos).
-- `core/services/` — Integração de serviços (MozeSMS, Gmail SMTP, PDFs com ReportLab).
-- `gestao_barcos/` — Configurações do projeto Django (banco de dados, email, rotas).
-- `templates/` — Templates HTML com tema marítimo (azul oceano, azul profundo, areia clara).
-- `static/` — CSS marítimo premium e JavaScript com alertas SweetAlert2 e gráficos Chart.js.
-- `mobile_app/` — Aplicação móvel Flutter completa pronta para consumo da API REST.
+O sistema foi construido de acordo com os requisitos e regras de negocio da INTRANSMAR e da pesca artesanal local, abrangendo o registo de embarcacoes, emissao de licencas de navegacao e titulos de propriedade, vistorias, notificacoes automaticas (SMS e E-mail) e geracao de documentos em PDF.
+
+## Tecnologias Utilizadas
+
+| Camada         | Tecnologia                        |
+|----------------|-----------------------------------|
+| Backend        | Django 5.x + Django REST Framework |
+| Base de Dados  | PostgreSQL 16                     |
+| Frontend Web   | HTML5, CSS3, JavaScript (Chart.js, SweetAlert2) |
+| App Movel      | Flutter (Dart)                    |
+| SMS            | MozeSMS API REST                  |
+| E-mail         | Gmail SMTP                        |
+| PDF            | ReportLab                         |
+
+## Estrutura do TCC
+
+```
+gestao_barcos_beira/
+  core/                  -- Aplicacao Django principal (models, views, forms, decorators)
+    management/commands/  -- Comandos automaticos (verificar_alertas)
+    services/             -- Servicos de integracao (SMS, E-mail, PDF)
+    views/                -- Views separadas por perfil (admin, intransmar, pescador, api)
+  gestao_barcos/          -- Configuracoes do projecto Django (base de dados, rotas)
+  templates/              -- Templates HTML com tema maritimo
+  static/                 -- CSS, JavaScript e recursos estaticos
+  mobile_app/             -- Aplicacao movel Flutter
+    lib/views/            -- Ecras da aplicacao movel
+    lib/services/         -- Servico de comunicacao com a API REST
+    lib/theme/            -- Tema visual (TemaMaritimo)
+```
+
+## Funcionalidades Principais
+
+- Registo e aprovacao de embarcacoes artesanais
+- Emissao de Licencas de Navegacao (validade anual) e Titulos de Propriedade (permanente)
+- Geracao automatica de documentos PDF com marca de agua e logotipo
+- Notificacao automatica via SMS (MozeSMS) e E-mail ao pescador quando um documento e emitido
+- Alertas automaticos de expiracao de licencas e vistorias (configuravel pelo administrador)
+- Painel de controlo com graficos e estatisticas (Chart.js)
+- Tres perfis de utilizador: Pescador, INTRANSMAR e Administrador
+- Aplicacao movel Flutter para consulta de embarcacoes e documentos pelo pescador
+- Recuperacao de palavra-passe via e-mail (web e movel)
 
 ---
 
-## 🛠️ Próximos Passos Obrigatórios (Executar localmente)
+## Instalacao e Configuracao
 
-### 1. Instalação do PostgreSQL 16
-Como a instalação local via terminal automático é bloqueada pelo UAC do Windows (exigência de privilégios de administrador), instale o PostgreSQL manualmente:
-1. Descarregue o instalador do PostgreSQL 16 para Windows no site oficial da [EnterpriseDB](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads).
-2. Siga o assistente de instalação:
-   - **Password do superuser (`postgres`):** defina como `postgres` (para corresponder ao seu ficheiro `.env`).
-   - **Porta:** 5432.
-3. Abra a ferramenta **pgAdmin 4** (instalada juntamente com o PostgreSQL) ou utilize a linha de comandos (SQL Shell - psql) para criar a base de dados:
-   ```sql
-   CREATE DATABASE gestao_barcos_beira;
-   ```
+### 1. Requisitos
 
-### 2. Configurar o Ambiente de Desenvolvimento Python
-No seu terminal local (no diretório `E:\gestao_barcos_beira`), crie um ambiente virtual e instale as dependências:
+- Python 3.10 ou superior
+- PostgreSQL 16
+- Flutter SDK (para a aplicacao movel)
+- Conta Gmail com senha de aplicacao (para envio de e-mails)
+- Conta MozeSMS com credenciais de API (para envio de SMS)
+
+### 2. Base de Dados
+
+Instale o PostgreSQL e crie a base de dados:
+
+```sql
+CREATE DATABASE gestao_barcos_beira;
+```
+
+### 3. Ambiente de Desenvolvimento Python
+
 ```bash
 # Criar ambiente virtual
-python -m venv venv
+python -m venv .venv
 
-# Ativar ambiente virtual
-# No PowerShell:
-.\venv\Scripts\Activate.ps1
-# No Prompt de Comando (CMD):
-.\venv\Scripts\activate.bat
+# Activar ambiente virtual (PowerShell)
+.\.venv\Scripts\Activate.ps1
 
-# Instalar dependências
+# Instalar dependencias
 pip install -r requirements.txt
 ```
 
-### 3. Executar Migrações e Inicializar a Base de Dados
-Com a base de dados criada e o ambiente virtual ativo:
+### 4. Configuracao do Ficheiro .env
+
+Copie o ficheiro de exemplo e preencha com as suas credenciais:
+
 ```bash
-# Gerar ficheiros de migração
+copy .env.example .env
+```
+
+Preencha os campos:
+- SECRET_KEY, DB_NAME, DB_USER, DB_PASSWORD (PostgreSQL)
+- MOZESMS_API_KEY, MOZESMS_API_SECRET, MOZESMS_SENDER_ID (MozeSMS)
+- EMAIL_HOST_USER, EMAIL_HOST_PASSWORD (Gmail SMTP)
+
+### 5. Migracoes e Utilizador Administrador
+
+```bash
 python manage.py makemigrations core
-
-# Aplicar migrações ao PostgreSQL
 python manage.py migrate
-
-# Criar utilizador Administrador principal do sistema
-# (Introduza o e-mail, nome completo, telefone e palavra-passe quando solicitado)
 python manage.py createsuperuser
 ```
 
-### 4. Iniciar o Servidor Django
+### 6. Iniciar o Servidor
+
 ```bash
 python manage.py runserver
 ```
-Aceda ao sistema no seu browser através de: `http://127.0.0.1:8000/`.
+
+Aceda ao sistema em: http://127.0.0.1:8000/
 
 ---
 
-## 📱 Aplicação Flutter (Mobile)
-A aplicação móvel encontra-se na pasta `mobile_app/`. Para rodar ou compilar:
+## Aplicacao Movel (Flutter)
 
-1. **Instalar o Flutter SDK via Puro (Já Instalado):**
-   Como o gestor **Puro** já foi instalado no seu computador via `winget`, a instalação do Flutter é extremamente simples:
-   - Feche e reabra o seu terminal (para carregar a nova variável `PATH`).
-   - Execute o seguinte comando para descarregar e configurar o Flutter SDK estável:
-     ```bash
-     puro create meu-flutter stable
-     ```
-   - Defina essa versão como padrão global:
-     ```bash
-     puro global meu-flutter
-     ```
-   - O comando `flutter` ficará imediatamente ativo no seu terminal!
+A aplicacao movel encontra-se na pasta `mobile_app/`.
 
-2. **Instalar dependências da app:**
-   Navegue até a pasta da app móvel e instale as dependências:
+### Instalacao
+
+```bash
+cd mobile_app
+flutter pub get
+```
+
+### Execucao em dispositivo fisico (via USB)
+
+1. Ligue o telemovel ao computador por cabo USB.
+2. Active a ponte de comunicacao:
    ```bash
-   cd mobile_app
-   flutter pub get
+   adb reverse tcp:8000 tcp:8000
    ```
-3. **Executar a app:**
-   Altere o endereço IP no ficheiro `lib/services/api_service.dart` (substitua `10.0.2.2` pelo IP local do seu computador na rede Beira se testar em telemóvel real).
-   Execute a app:
+3. Inicie a aplicacao:
    ```bash
    flutter run
    ```
 
 ---
 
-## 🔔 Teste de Notificações SMS (MozeSMS) e E-mails (Gmail)
-1. Edite o ficheiro `E:\gestao_barcos_beira\.env` e preencha as credenciais da **MozeSMS** e o seu **Gmail SMTP** (com a senha de app de 16 caracteres gerada na segurança da sua conta Google).
-2. Para testar o serviço automático de envio de alertas diários para documentos a expirar (licenças e vistorias), execute o comando Django:
-   ```bash
-   python manage.py verificar_alertas
-   ```
+## Alertas Automaticos de Expiracao
+
+O sistema possui um comando Django que verifica automaticamente todas as licencas e vistorias proximas da data de expiracao e envia notificacoes (SMS e E-mail) aos proprietarios.
+
+O administrador configura os parametros de alerta (dias de antecedencia e canal de envio) atraves do painel web, na seccao "Configuracao de Alertas".
+
+Para executar a verificacao manualmente:
+
+```bash
+python manage.py verificar_alertas
+```
+
+---
+
+## Autor
+
+Joaquim Arone — Trabalho de Conclusao de Curso

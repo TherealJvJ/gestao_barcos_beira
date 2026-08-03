@@ -28,14 +28,18 @@ def enviar_sms(telefone, mensagem):
     if not numero_formatado.startswith('258'):
         numero_formatado = '258' + numero_formatado
 
-    url = "https://api.mozesms.com/sms/send"
-    payload = {
-        "phone": numero_formatado,
-        "message": mensagem,
-    }
+    url = "https://api.mozesms.com/v1/sms/send"
     
-    if getattr(settings, 'MOZESMS_SENDER_ID', None):
-        payload["sender_id"] = settings.MOZESMS_SENDER_ID
+    # Se o SENDER_ID estiver vazio, usar o padrão da plataforma
+    sender_id = getattr(settings, 'MOZESMS_SENDER_ID', None)
+    if not sender_id:
+        sender_id = "MozeSMS"
+        
+    payload = {
+        "to": numero_formatado,
+        "message": mensagem,
+        "from": sender_id
+    }
     headers = {
         "X-API-Key": settings.MOZESMS_API_KEY,
         "X-API-Secret": settings.MOZESMS_API_SECRET,
