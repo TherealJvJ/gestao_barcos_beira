@@ -19,6 +19,7 @@ class Utilizador(AbstractUser):
         ('admin', 'Administrador'),
     ]
 
+    id = models.AutoField(primary_key=True, db_column='id_utilizador')
     nome_completo = models.CharField('Nome Completo', max_length=255)
     email = models.EmailField('E-mail Gmail', unique=True)
     telefone = models.CharField('Telefone (+258)', max_length=20)
@@ -75,6 +76,7 @@ class Embarcacao(models.Model):
         ('rejeitado', 'Rejeitado'),
     ]
 
+    id = models.AutoField(primary_key=True, db_column='id_embarcacao')
     nome = models.CharField('Nome da Embarcação', max_length=100)
     numero_matricula = models.CharField(
         'Nº Matrícula', max_length=50, unique=True
@@ -96,7 +98,8 @@ class Embarcacao(models.Model):
     )
     proprietario = models.ForeignKey(
         Utilizador, on_delete=models.CASCADE,
-        related_name='embarcacoes_proprias', verbose_name='Proprietário'
+        related_name='embarcacoes_proprias', verbose_name='Proprietário',
+        db_column='id_utilizador'
     )
     pescadores = models.ManyToManyField(
         Utilizador, related_name='embarcacoes_pesca',
@@ -143,9 +146,11 @@ class Embarcacao(models.Model):
 class LicencaNavegacao(models.Model):
     """Licença de Navegação — válida até 31 de Dezembro do ano de emissão."""
 
+    id = models.AutoField(primary_key=True, db_column='id_licenca_navegacao')
     embarcacao = models.ForeignKey(
         Embarcacao, on_delete=models.CASCADE,
-        related_name='licencas', verbose_name='Embarcação'
+        related_name='licencas', verbose_name='Embarcação',
+        db_column='id_embarcacao'
     )
     numero_licenca = models.CharField('Nº Licença', max_length=50, unique=True)
     data_emissao = models.DateField('Data de Emissão', default=timezone.now)
@@ -154,7 +159,8 @@ class LicencaNavegacao(models.Model):
     activa = models.BooleanField('Activa', default=True)
     emitida_por = models.ForeignKey(
         Utilizador, on_delete=models.SET_NULL, null=True,
-        related_name='licencas_emitidas', verbose_name='Emitida por'
+        related_name='licencas_emitidas', verbose_name='Emitida por',
+        db_column='id_utilizador'
     )
     observacoes = models.TextField('Observações', blank=True)
     data_criacao = models.DateTimeField('Data de Criação', auto_now_add=True)
@@ -208,16 +214,20 @@ class LicencaNavegacao(models.Model):
 class TituloPropriedade(models.Model):
     """Título de Propriedade — permanente, sem prazo de validade."""
 
+    id = models.AutoField(primary_key=True, db_column='id_titulo_propriedade')
     embarcacao = models.OneToOneField(
         Embarcacao, on_delete=models.CASCADE,
-        related_name='titulo', verbose_name='Embarcação'
+        related_name='titulo', verbose_name='Embarcação',
+        db_column='id_embarcacao'
     )
     numero_titulo = models.CharField('Nº Título', max_length=50, unique=True)
     data_emissao = models.DateField('Data de Emissão', default=timezone.now)
+    data_validade = models.DateField('Data de Validade', null=True, blank=True, db_column='data_validade')
     activo = models.BooleanField('Activo', default=True)
     emitido_por = models.ForeignKey(
         Utilizador, on_delete=models.SET_NULL, null=True,
-        related_name='titulos_emitidos', verbose_name='Emitido por'
+        related_name='titulos_emitidos', verbose_name='Emitido por',
+        db_column='id_utilizador'
     )
     observacoes = models.TextField('Observações', blank=True)
     data_criacao = models.DateTimeField('Data de Criação', auto_now_add=True)
@@ -239,17 +249,21 @@ class Vistoria(models.Model):
         ('reprovada', 'Reprovada'),
     ]
 
+    id = models.AutoField(primary_key=True, db_column='id_vistoria')
     embarcacao = models.ForeignKey(
         Embarcacao, on_delete=models.CASCADE,
-        related_name='vistorias', verbose_name='Embarcação'
+        related_name='vistorias', verbose_name='Embarcação',
+        db_column='id_embarcacao'
     )
     inspector = models.ForeignKey(
         Utilizador, on_delete=models.SET_NULL, null=True,
-        related_name='vistorias_realizadas', verbose_name='Inspector'
+        related_name='vistorias_realizadas', verbose_name='Inspector',
+        db_column='id_utilizador'
     )
     data_vistoria = models.DateField('Data da Vistoria', default=timezone.now)
     proxima_vistoria = models.DateField(
-        'Próxima Vistoria', null=True, blank=True
+        'Próxima Vistoria', null=True, blank=True,
+        db_column='data_proxima_vistoria'
     )
     resultado = models.CharField(
         'Resultado', max_length=20, choices=RESULTADO_CHOICES
@@ -275,9 +289,11 @@ class Manutencao(models.Model):
         ('correctiva', 'Correctiva'),
     ]
 
+    id = models.AutoField(primary_key=True, db_column='id_manutencao')
     embarcacao = models.ForeignKey(
         Embarcacao, on_delete=models.CASCADE,
-        related_name='manutencoes', verbose_name='Embarcação'
+        related_name='manutencoes', verbose_name='Embarcação',
+        db_column='id_embarcacao'
     )
     descricao = models.CharField('Descrição', max_length=255)
     data_manutencao = models.DateField(
@@ -324,14 +340,17 @@ class Alerta(models.Model):
         ('falhou', 'Falhou'),
     ]
 
+    id = models.AutoField(primary_key=True, db_column='id_alerta')
     embarcacao = models.ForeignKey(
         Embarcacao, on_delete=models.CASCADE,
         related_name='alertas', verbose_name='Embarcação',
-        null=True, blank=True
+        null=True, blank=True,
+        db_column='id_embarcacao'
     )
     destinatario = models.ForeignKey(
         Utilizador, on_delete=models.CASCADE,
-        related_name='alertas_recebidos', verbose_name='Destinatário'
+        related_name='alertas_recebidos', verbose_name='Destinatário',
+        db_column='id_utilizador'
     )
     tipo_alerta = models.CharField(
         'Tipo de Alerta', max_length=30, choices=TIPO_CHOICES
@@ -349,7 +368,8 @@ class Alerta(models.Model):
     configuracao = models.ForeignKey(
         'ConfiguracaoAlerta', on_delete=models.SET_NULL,
         related_name='alertas_gerados', verbose_name='Configuração de Alerta',
-        null=True, blank=True
+        null=True, blank=True,
+        db_column='id_configuracao_alerta'
     )
     data_criacao = models.DateTimeField('Data de Criação', auto_now_add=True)
 
@@ -372,10 +392,12 @@ class ConfiguracaoAlerta(models.Model):
         ('ambos', 'Ambos'),
     ]
 
+    id = models.AutoField(primary_key=True, db_column='id_configuracao_alerta')
     utilizador = models.ForeignKey(
         Utilizador, on_delete=models.CASCADE,
         related_name='configuracoes_alerta', verbose_name='Utilizador',
-        null=True, blank=True
+        null=True, blank=True,
+        db_column='id_utilizador'
     )
     tipo_documento = models.CharField(
         'Tipo de Documento', max_length=20,
