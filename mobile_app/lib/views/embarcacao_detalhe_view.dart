@@ -22,7 +22,6 @@ class _EmbarcacaoDetalheViewState extends State<EmbarcacaoDetalheView> {
 
     try {
       final token = await _apiService.getToken();
-      // Anexar o token na query string para o backend autenticar o pedido via browser
       final url = '${ApiService.baseUrl}/$urlSufixo?token=$token';
       final uri = Uri.parse(url);
 
@@ -66,14 +65,20 @@ class _EmbarcacaoDetalheViewState extends State<EmbarcacaoDetalheView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '📋 Ficha Técnica',
-                      style: TextStyle(
-                        fontFamily: 'Outfit',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: TemaMaritimo.azulProfundo,
-                      ),
+                    Row(
+                      children: const [
+                        Icon(Icons.assignment_outlined, color: TemaMaritimo.azulOceano, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Ficha Técnica',
+                          style: TextStyle(
+                            fontFamily: 'Outfit',
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: TemaMaritimo.azulProfundo,
+                          ),
+                        ),
+                      ],
                     ),
                     const Divider(),
                     _buildFichaItem('Matrícula', emb.numeroMatricula),
@@ -95,14 +100,20 @@ class _EmbarcacaoDetalheViewState extends State<EmbarcacaoDetalheView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '📜 Documentos',
-                      style: TextStyle(
-                        fontFamily: 'Outfit',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: TemaMaritimo.azulProfundo,
-                      ),
+                    Row(
+                      children: const [
+                        Icon(Icons.description_outlined, color: TemaMaritimo.azulOceano, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Documentos',
+                          style: TextStyle(
+                            fontFamily: 'Outfit',
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: TemaMaritimo.azulProfundo,
+                          ),
+                        ),
+                      ],
                     ),
                     const Divider(),
                     
