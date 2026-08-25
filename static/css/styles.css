@@ -25,9 +25,9 @@
     --navbar-height:  68px;
     --radius:         10px;
     --radius-sm:      6px;
-    --shadow-sm:      0 1px 4px rgba(6,59,79,0.07);
-    --shadow-md:      0 4px 16px rgba(6,59,79,0.10);
-    --shadow-lg:      0 8px 32px rgba(6,59,79,0.14);
+    --shadow-sm:      0 2px 10px rgba(6, 59, 79, 0.03);
+    --shadow-md:      0 8px 24px rgba(6, 59, 79, 0.06);
+    --shadow-lg:      0 16px 48px rgba(6, 59, 79, 0.09);
     --transition:     all 0.2s ease;
 }
 
@@ -522,13 +522,13 @@ img { max-width: 100%; }
     justify-content: space-between;
     align-items: center;
     gap: 16px;
-    transition: var(--transition);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     height: 100%;
 }
 
 .stat-card:hover {
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-1.5px);
 }
 
 .stat-card.success { border-left-color: var(--success); }
@@ -1163,7 +1163,7 @@ img { max-width: 100%; }
     border: 1px solid var(--border-color);
     padding: 20px;
     border-top: 3px solid var(--primary);
-    transition: var(--transition);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -1171,7 +1171,7 @@ img { max-width: 100%; }
 
 .boat-card:hover {
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-1.5px);
 }
 
 .boat-card-icon {
