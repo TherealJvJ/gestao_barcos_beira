@@ -76,9 +76,6 @@
             <a href="{% url 'lista_utilizadores' %}" {% if request.resolver_match.url_name == 'lista_utilizadores' %}class="active"{% endif %}>
                 <i class="bi bi-people"></i> Utilizadores
             </a>
-            <a href="{% url 'lista_embarcacoes_intransmar' %}" {% if request.resolver_match.url_name == 'lista_embarcacoes_intransmar' %}class="active"{% endif %}>
-                <i class="bi bi-water"></i> Embarcações
-            </a>
             <a href="{% url 'alertas_config' %}" {% if request.resolver_match.url_name == 'alertas_config' %}class="active"{% endif %}>
                 <i class="bi bi-sliders"></i> Configurar Alertas
             </a>
