@@ -152,6 +152,6 @@ def alertas_log(request):
     return render(request, 'core/alertas_log.html', {
         'alertas': page_obj,
         'page_obj': page_obj,
-        'titulo_pagina': 'Log de Notificações',
+        'titulo_pagina': 'Histórico de Notificações',
         'is_admin': True,
     })
