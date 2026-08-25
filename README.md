@@ -1,5 +1,7 @@
 # Sistema de Gestao de Embarcacoes Artesanais — INTRANSMAR Beira
 
+**Versão 1.0 (V.1)**
+
 Trabalho de Conclusao de Curso (TCC) que apresenta o desenvolvimento de um sistema web e movel para a gestao e licenciamento de embarcacoes artesanais na Delegacao da Beira da INTRANSMAR (Instituto Nacional de Transportes Maritimos, Fluviais e Lacustres), Mocambique.
 
 O sistema foi construido de acordo com os requisitos e regras de negocio da INTRANSMAR e da pesca artesanal local, abrangendo o registo de embarcacoes, emissao de licencas de navegacao e titulos de propriedade, vistorias, notificacoes automaticas (SMS e E-mail) e geracao de documentos em PDF.
