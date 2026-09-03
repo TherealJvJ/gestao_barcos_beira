@@ -2,7 +2,8 @@
 
 import logging
 from io import BytesIO
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
@@ -10,7 +11,8 @@ logger = logging.getLogger(__name__)
 
 def enviar_email(destinatario_email, assunto, mensagem_html, anexo_pdf_bytes=None, nome_anexo=None):
     """
-    Envia e-mail via Gmail SMTP.
+    Envia e-mail via Gmail SMTP usando formato multipart (texto puro + HTML)
+    para garantir alta entregabilidade e evitar filtros de spam.
 
     Args:
         destinatario_email: E-mail do destinatário
@@ -27,13 +29,16 @@ def enviar_email(destinatario_email, assunto, mensagem_html, anexo_pdf_bytes=Non
         return {'sucesso': False, 'erro': 'Gmail SMTP não configurado. Configure EMAIL_HOST_USER no .env'}
 
     try:
-        email = EmailMessage(
+        # Gerar versão em texto simples alternativa para filtros antispam
+        corpo_texto = strip_tags(mensagem_html).strip()
+
+        email = EmailMultiAlternatives(
             subject=assunto,
-            body=mensagem_html,
+            body=corpo_texto,
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[destinatario_email],
         )
-        email.content_subtype = 'html'
+        email.attach_alternative(mensagem_html, 'text/html')
 
         # Anexar PDF se fornecido
         if anexo_pdf_bytes and nome_anexo:

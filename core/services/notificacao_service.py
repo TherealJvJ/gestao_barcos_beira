@@ -98,14 +98,14 @@ def notificar_expiracao(destinatario, tipo_alerta, embarcacao, documento_info, c
             f"da embarcacao {embarcacao.nome} expira em {dias} dias "
             f"({documento_info['data_validade']}). Renove a sua licenca."
         )
-        assunto = f"⚠️ Licença a Expirar — {embarcacao.nome}"
+        assunto = f"INTRANSMAR: Licença de Navegação a Expirar — {embarcacao.nome}"
     else:
         msg_sms = (
             f"INTRANSMAR ALERTA: A Vistoria da embarcacao {embarcacao.nome} "
             f"expira em {dias} dias ({documento_info['data_validade']}). "
             f"Agende uma nova vistoria."
         )
-        assunto = f"⚠️ Vistoria a Expirar — {embarcacao.nome}"
+        assunto = f"INTRANSMAR: Vistoria a Expirar — {embarcacao.nome}"
 
     mensagem_html = f"""
     <html>
