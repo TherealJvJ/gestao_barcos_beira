@@ -17,6 +17,52 @@ from core.serializers import (
 from core.services.pdf_service import gerar_pdf_licenca, gerar_pdf_titulo
 
 
+class RegistoAPIView(APIView):
+    """Registo de novos pescadores/proprietários via API."""
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        nome_completo = request.data.get('nome_completo')
+        email = request.data.get('email')
+        telefone = request.data.get('telefone')
+        numero_documento = request.data.get('numero_documento')
+        password = request.data.get('password')
+
+        if not all([nome_completo, email, telefone, numero_documento, password]):
+            return Response({'erro': 'Todos os campos são obrigatórios.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if Utilizador.objects.filter(email=email).exists():
+            return Response({'erro': 'Já existe um utilizador registado com este e-mail.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if Utilizador.objects.filter(telefone=telefone).exists():
+            return Response({'erro': 'Já existe um utilizador registado com este telefone.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = Utilizador.objects.create(
+                username=email,
+                email=email,
+                nome_completo=nome_completo,
+                telefone=telefone,
+                numero_documento=numero_documento,
+                tipo_utilizador='pescador',
+                is_active=True
+            )
+            user.set_password(password)
+            user.save()
+
+            token, created = Token.objects.get_or_create(user=user)
+
+            return Response({
+                'token': token.key,
+                'user_id': user.pk,
+                'email': user.email,
+                'nome': user.nome_completo,
+                'tipo_utilizador': user.tipo_utilizador
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'erro': f'Erro ao criar conta: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class LoginAPIView(ObtainAuthToken):
     """Autenticação e geração de token para a app móvel."""
     permission_classes = [permissions.AllowAny]

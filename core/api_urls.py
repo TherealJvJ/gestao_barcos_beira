@@ -11,6 +11,7 @@ router.register('configuracoes', api_views.ConfiguracaoAlertaViewSet, basename='
 
 urlpatterns = [
     path('login/', api_views.LoginAPIView.as_view(), name='api_login'),
+    path('registar/', api_views.RegistoAPIView.as_view(), name='api_registar'),
     path('perfil/', api_views.PerfilAPIView.as_view(), name='api_perfil'),
     path('licencas/<int:pk>/pdf/', api_views.DescarregarPDFLicencaAPIView.as_view(), name='api_pdf_licenca'),
     path('titulos/<int:pk>/pdf/', api_views.DescarregarPDFTituloAPIView.as_view(), name='api_pdf_titulo'),

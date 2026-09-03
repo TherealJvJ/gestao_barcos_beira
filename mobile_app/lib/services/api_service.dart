@@ -22,6 +22,36 @@ class ApiService {
     };
   }
 
+  Future<Map<String, dynamic>?> registar(String nomeCompleto, String email, String telefone, String numeroDocumento, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/registar/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'nome_completo': nomeCompleto,
+          'email': email,
+          'telefone': telefone,
+          'numero_documento': numeroDocumento,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        await _storage.write(key: 'auth_token', value: data['token']);
+        await _storage.write(key: 'user_nome', value: data['nome']);
+        await _storage.write(key: 'user_tipo', value: data['tipo_utilizador']);
+        return data;
+      } else {
+        final errorData = jsonDecode(response.body);
+        return {'erro': errorData['erro'] ?? 'Erro desconhecido.'};
+      }
+    } catch (e) {
+      print('Erro de Registo API: $e');
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> login(String email, String password) async {
     try {
       final response = await http.post(

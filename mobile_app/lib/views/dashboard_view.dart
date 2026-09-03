@@ -274,13 +274,13 @@ class _DashboardViewState extends State<DashboardView> {
                     itemBuilder: (context, index) {
                       final emb = _embarcacoes[index];
                       return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        elevation: 1,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        elevation: 3,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           leading: const CircleAvatar(
                             backgroundColor: Color(0xFFE2F0F5),
                             child: Icon(Icons.directions_boat, color: TemaMaritimo.azulOceano),
@@ -325,32 +325,32 @@ class _DashboardViewState extends State<DashboardView> {
 
   Widget _buildStatCard(String titulo, String valor, IconData icone, Color cor) {
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 22),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           border: Border(left: BorderSide(color: cor, width: 4)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icone, color: cor, size: 28),
-            const SizedBox(height: 12),
+            Icon(icone, color: cor, size: 32),
+            const SizedBox(height: 14),
             Text(
               valor,
               style: const TextStyle(
-                fontSize: 28,
+                fontSize: 30,
                 fontWeight: FontWeight.bold,
                 color: TemaMaritimo.azulProfundo,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 4),
             Text(
               titulo,
-              style: const TextStyle(fontSize: 12, color: TemaMaritimo.cinzaRede, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 13, color: TemaMaritimo.cinzaRede, fontWeight: FontWeight.bold),
             ),
           ],
         ),

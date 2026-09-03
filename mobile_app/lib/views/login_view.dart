@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/api_service.dart';
 import 'dashboard_view.dart';
 import 'recuperar_senha_view.dart';
+import 'registar_view.dart';
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -156,6 +157,28 @@ class _LoginViewState extends State<LoginView> {
                                   child: const Text('Entrar'),
                                 ),
                               ),
+                        const SizedBox(height: 18),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Não tem uma conta? '),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const RegistarView()),
+                                );
+                              },
+                              child: const Text(
+                                'Registe-se',
+                                style: TextStyle(
+                                  color: Color(0xFF0A6B8A),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
